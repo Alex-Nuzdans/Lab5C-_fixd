@@ -1,0 +1,236 @@
+﻿// See https://aka.ms/new-console-template for more information
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Aspose.Cells;
+using Lab_5_2;
+using static System.Net.Mime.MediaTypeNames;
+class Home
+{
+    static void Main()
+    {
+        var temp = new Aim();
+        var wb = new Workbook("LR5var11.xls");
+        var paint = temp.OutputP(wb);
+        var art = temp.OutputA(wb);
+        var style = temp.OutputS(wb);
+        temp=new Aim(paint, art, style);
+        string action = null;
+        string test2 = null;
+        var id = 0;
+        while (action != "exit")
+        {
+            Console.WriteLine("Введите All, чтобы вывести все данные" +
+                              "\nВведите delete, чтобы удалить элемент" +
+                              "\nВведите corrected, чтобы изменить элемент" +
+                              "\nВведите add, чтобы добавить элемент" +
+                              "\nВведите part, чтобы вывести все картины и их" +
+                              " авторов из определённой части эрмитажа" +
+                              "\nВведите count_part, чтобы определить количество художников," +
+                              " у которых больше определённого количества картин в определённой" +
+                              " части Эрмитажа\nВведите print_style, чтобы вывести всех художников" +
+                              " и все картины определённого стиля\nnВведите print_artist," +
+                              " чтобы вывести всех стилей и все картины определённого автора" +
+                              "\nВведите print_part, чтобы вывести всех художников и их картины" +
+                              " определённого стиля в определённой части Эрмитажа " +
+                              "\nВведите exit, чтобы выйти.\n");
+            action = Console.ReadLine();
+            if (action == "All") {
+                temp.PrintAll();
+            }
+            else if (action == "delete")
+            {
+                Console.WriteLine("Введите Paint — чтобы удалить из таблицы 'Картины'," +
+                                  " Art — чтобы удалить из таблицы 'Художники'," +
+                                  " Style — чтобы удалить из таблицы 'Стили'");
+                string test = Console.ReadLine();
+                try
+                {
+                    Console.WriteLine("Введите id удаляемого элемента");
+                    id = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception FormatException)
+                {
+                    Console.WriteLine("Ошибка. Введено недопустимое знвчение!");
+                    continue;
+                }
+               temp.Refuse(id,test);
+            }
+            else if(action == "corrected")
+            {
+                Console.WriteLine("Введите Paint — чтобы модернезировать таблицу 'Картины'," +
+                                  " Art — чтобы модернезировать таблицу 'Художники'," +
+                                  " Style — чтобы модернезировать таблицу 'Стили'");
+                string test = Console.ReadLine();
+                Console.WriteLine("Введите id изменяемого элемента");
+                try
+                {
+                    id = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception FormatException)
+                {
+                    Console.WriteLine("Ошибка. Введено недопустимое знвчение!");
+                    continue;
+                }
+                if (test == "Paint")
+                {
+                    Console.WriteLine("Введите название одного из следующих изменяемых элементов" +
+                                      "(имя — name, ID_Художника — id_artsts, Часть Эрмитажа — part," +
+                                      " Год создания — year, ID_Стиля — id_stile)");
+                    test2= Console.ReadLine();
+                    Console.WriteLine("Введите новое значение");
+                    if(test2== "name" || test2 == "year") {
+                        string test3 = Console.ReadLine();
+                        temp.Corrected(id,test2,test3, test);
+                    }
+                    else
+                    {
+                        int test3 =0;
+                        try
+                        {
+                            test3 = Convert.ToInt32(Console.ReadLine());
+                        }
+                        catch (Exception FormatException)
+                        {
+                            Console.WriteLine("Ошибка, задано стандартное значение.");
+                        }
+                        temp.Corrected(id, test2, test3);
+                    }
+                }
+                else
+                {
+                    
+                    Console.WriteLine("Введите новое имя");
+                    test2 = Console.ReadLine();
+                    temp.Corrected(id,"name", test2,test);
+                }
+            }
+            else if (action == "add")
+            {
+                Console.WriteLine("Введите Paint — чтобы добавить элемент в таблицу 'Картины'," +
+                                  " Art — чтобы добавить элемент в таблицу 'Художники'," +
+                                  " Style — чтобы добавить элемент в таблицу 'Стили'");
+                var test = Console.ReadLine();
+                if (test == "Paint")
+                {
+                    Console.WriteLine("Введите название картины");
+                    var name = Console.ReadLine();
+                    Console.WriteLine("Введите id Автора");
+                    var idArtist = 0;
+                    try
+                    {
+                        idArtist = Convert.ToInt32(Console.ReadLine());
+                    }
+                    catch (Exception FormatException)
+                    {
+                        Console.WriteLine("Ошибка, задано стандартное значение");
+                    }
+                    Console.WriteLine("Введите часть Эрмитажа");
+                    var part = 0;
+                    try
+                    {
+                        part = Convert.ToInt32(Console.ReadLine());
+                    }
+                    catch (Exception FormatException)
+                    {
+                        Console.WriteLine("Ошибка, задано стандартное значение");
+                    }
+                    Console.WriteLine("Введите год написания картины");
+                    var year = Console.ReadLine();
+                    Console.WriteLine("Введите id стиля");
+                    var idStyle = 0;
+                    try
+                    {
+                        idStyle = Convert.ToInt32(Console.ReadLine());
+                    }
+                    catch (Exception FormatException)
+                    {
+                        Console.WriteLine("Ошибка, задано стандартное значение");
+                    }
+                    temp.NewValue(name,idArtist,part,year,idStyle);
+                }
+                else
+                {
+                    if (test == "Style")
+                    {
+                        Console.WriteLine("Введите название Стиял");
+                    }
+                    else if (test == "Art") {
+                        Console.WriteLine("Введите имя Художника");
+                    }
+                    var name = Console.ReadLine();
+                    temp.NewValue(name, test);
+                }
+            }
+            else if (action == "part")
+            {
+                Console.WriteLine("Введите номер части Эрмитажа");
+                try
+                {
+                    id = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception FormatException)
+                {
+                    Console.WriteLine("Ошибка, задано стандартное значение");
+                    id = 1;
+                }
+                temp.PrintOne(id);
+            }
+            else if (action == "count_part")
+            {
+                Console.WriteLine("Введите максимальное число картин");
+                var count = 0;
+                try
+                {
+                    count = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception FormatException)
+                {
+                    Console.WriteLine("Ошибка, задано стандартное значение");
+                }
+                Console.WriteLine("Введите номер часть Эрмитажа");
+                try
+                {
+                    id = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception FormatException)
+                {
+                    Console.WriteLine("Ошибка, задано стандартное значение");
+                    id = 1;
+                }
+                temp.PrintTwo(count,id);
+            }
+            else if(action == "print_style")
+            {
+                Console.WriteLine("Введите название Стиля");
+                test2 = Console.ReadLine();
+                temp.PrintTree(test2, 1);
+            }
+            else if (action == "print_artist")
+            {
+                Console.WriteLine("Введите имя Художника");
+                test2 = Console.ReadLine();
+                temp.PrintTree(test2);
+            }
+            else if(action == "print_part")
+            {
+                Console.WriteLine("Введите номер часть Эрмитажа");
+                try
+                {
+                   id = Convert.ToInt32(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Ошибка, задано стандартное значение");
+                    id = 1;
+                }
+                Console.WriteLine("Введите название Стиля");
+                test2 = Console.ReadLine();
+                temp.PrintFore(id,test2);
+            }
+        }
+    }
+}

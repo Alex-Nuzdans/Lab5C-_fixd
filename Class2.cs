@@ -1,0 +1,361 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Aspose.Cells;
+using Lab_5_1;
+
+namespace Lab_5_2
+{
+    internal class Aim
+    {
+        List<Paintings> Paint;
+        List<Artists> Art;
+        List<Styles> Style;
+
+        public Aim(List<Paintings> Paint, List<Artists> Art, List<Styles> Style)
+        {
+            this.Paint = Paint;
+            this.Art = Art;
+            this.Style = Style;
+        }
+
+
+        public Aim()
+        {
+            Paint = new List<Paintings>();
+            Art = new List<Artists>();
+            Style = new List<Styles>();
+        }
+
+
+        public List<Paintings> OutputP(Workbook wb)
+        {
+            WorksheetCollection collection = wb.Worksheets;
+            var Lists = new ArrayList();
+            var Pain = new List<Paintings>();
+            Worksheet work = collection[0];
+            int row = work.Cells.MaxDataRow;
+            int collon = work.Cells.MaxDataColumn;
+            for (int j = 1; j < row; j++)
+            {
+                for (int k = 0; k <= collon; k++)
+                {
+                    Lists.Add(work.Cells[j, k].Value);
+                }
+                Pain.Add(new Paintings(Convert.ToInt32(Lists[0]),
+                        Convert.ToString(Lists[1]), Convert.ToInt32(Lists[2]),
+                        Convert.ToInt32(Lists[3]), Convert.ToString(Lists[4]),
+                        Convert.ToInt32(Lists[5])));
+                Lists.Clear();
+            };
+            return Pain;
+        }
+
+
+        public List<Artists> OutputA(Workbook wb)
+        {
+            WorksheetCollection collection = wb.Worksheets;
+            var Lists = new ArrayList();
+            var Art = new List<Artists>();
+            Worksheet work = collection[1];
+            int row = work.Cells.MaxDataRow;
+            int collon = work.Cells.MaxDataColumn;
+            for (int j = 1; j < row; j++)
+            {
+                for (int k = 0; k <= collon; k++)
+                {
+                    Lists.Add(work.Cells[j, k].Value);
+                }
+                Art.Add(new Artists(Convert.ToInt32(Lists[0]), Convert.ToString(Lists[1])));
+                Lists.Clear();
+            };
+            return Art;
+        }
+
+
+        public List<Styles> OutputS(Workbook wb)
+        {
+            WorksheetCollection collection = wb.Worksheets;
+            var Lists = new ArrayList();
+            var Styl = new List<Styles>();
+            Worksheet work = collection[2];
+            int row = work.Cells.MaxDataRow;
+            int collon = work.Cells.MaxDataColumn;
+            for (int j = 1; j < row; j++)
+            {
+                for (int k = 0; k <= collon; k++)
+                {
+                    Lists.Add(work.Cells[j, k].Value);
+                }
+                Styl.Add(new Styles(Convert.ToInt32(Lists[0]), Convert.ToString(Lists[1])));
+                Lists.Clear();
+            };
+            return Styl;
+        }
+
+
+        public void PrintAll()
+        {
+            var tests1= new List<List<string>>();
+            var tests2 = new List<List<string>>();
+            var tests3 = new List<List<string>>();
+            foreach (var i in Paint) { 
+                tests1.Add(i.StrCon());
+            }
+            foreach (var i in Art)
+            {
+                tests2.Add(i.StrCon());
+            }
+            foreach (var i in Style)
+            {
+                tests3.Add(i.StrCon());
+            }
+            var temp = from paint in tests1
+                       join art in tests2 on paint[2] equals art[0]
+                       join style in tests3 on paint[5] equals style[0]
+                       orderby Convert.ToInt32(paint[0])
+                       select new{ID=paint[0]+"\n",
+                                  Название = paint[1]+"\n",
+                                  Имя_Художника = art[1] + "\n",
+                                  Часть_Эрмитажа = paint[3] + "\n",
+                                  Стиль = style[1] + "\n" };
+            foreach(var i in temp)
+            {
+                Console.WriteLine(i);
+            }
+        }
+
+
+        public void Refuse(int id,string mode= "Paint")
+        {
+            if (mode == "Paint")
+            {
+                var j = Paint.Where(p=>p.id==id);
+                foreach (var i in j)
+                {
+                    Paint.Remove(i);
+                    break;
+                }
+            }
+            if (mode == "Art")
+            {
+                var j = Art.Where(p => p.id == id);
+                foreach (var i in j)
+                {
+                    Art.Remove(i);
+                    break;
+                }
+            }
+            if (mode == "Style")
+            {
+                var j = Style.Where(p => p.id == id);
+                foreach (var i in j)
+                {
+                    Style.Remove(i);
+                    break;
+                }
+            }
+        }
+
+
+        public void NewValue(string newname,int newActid,int newPart,
+                             string newyear,int newStileid) {
+            var j = Paint.Max(p=>p.id);
+            Paint.Add(new Paintings(j+1,newname, newActid, newPart, newyear, newStileid));
+        }
+
+
+        public void NewValue(string newname, string temp = "Art")
+        {
+            if (temp == "Art")
+            {
+                var j = Art.Max(p => p.id);
+                Art.Add(new Artists(j + 1, newname));
+            }
+            else
+            {
+                var j = Style.Max(p => p.id);
+                Style.Add(new Styles(j + 1, newname));
+            }
+        }
+
+
+        public void Corrected(int id,string mode, string date,string temp= "Paint")
+        {
+            if (temp == "Paint")
+            {
+                var j = Paint.Where(p => p.id == id);
+                foreach (var i in j)
+                {
+                    i.NewValue(mode, date);
+                }
+            }
+            if (temp == "Art") {
+                var j = Art.Where(p => p.id == id);
+                foreach (var i in j)
+                {
+                    i.NewValue(mode, date);
+                }
+            }
+            if (temp == "Style")
+            {
+                var j = Style.Where(p => p.id == id);
+                foreach (var i in j)
+                {
+                    i.NewValue(mode, date);
+                }
+            }
+        }
+
+
+        public void Corrected(int id, string mode, int date)
+        {
+            var j = Paint.Where(p => p.id == id);
+            foreach (var i in j)
+            {
+                i.NewValue(mode, date);
+            }
+        }
+
+
+        public void PrintOne(int part)
+        {
+            var tests = new List<List<string>>();
+            foreach (var i in Paint)
+            {
+                tests.Add(i.StrCon());
+            }
+            var temp = from paint in tests
+                       where paint[3]==Convert.ToString(part)
+                       select new { Название = paint[1] };
+            foreach (var i in temp)
+            {
+                Console.WriteLine(i);
+            }
+            Console.WriteLine("Общее количество картин равно: " + temp.Count());
+        }
+
+
+        public void PrintTwo(int longs, int part)
+        {
+            var tests1 = new List<List<string>>();
+            var tests2 = new List<List<string>>();
+            foreach (var i in Paint)
+            {
+                tests1.Add(i.StrCon());
+            }
+            foreach (var i in Art)
+            {
+                tests2.Add(i.StrCon());
+            }
+            var temp = from paint in tests1
+                       join art in tests2 on paint[2] equals art[0]
+                       where paint[3] == Convert.ToString(part) select art[1];
+            var temp2 = temp.GroupBy(i => i).Select(g => g.Count());
+            int c = 0;
+            foreach (var i in temp2)
+            {
+                if (i > longs)
+                {
+                    c++;
+                }
+            }
+            Console.WriteLine("Ответ: "+c);
+        }
+
+
+        public void PrintTree(string style, int t=0)
+        {
+            var tests1 = new List<List<string>>();
+            var tests2 = new List<List<string>>();
+            var tests3 = new List<List<string>>();
+            foreach (var i in Paint)
+            {
+                tests1.Add(i.StrCon());
+            }
+            foreach (var i in Art)
+            {
+                tests2.Add(i.StrCon());
+            }
+            foreach (var i in Style)
+            {
+                tests3.Add(i.StrCon());
+            }
+            var temp = from paint in tests1
+                       join art in tests2 on paint[2] equals art[0]
+                       join styles in tests3 on paint[5] equals styles[0]
+                       where styles[1] == style orderby paint[0] 
+                       select (new { Автор = art[1]+"\n", Картина = paint[1]+"\n" });
+            foreach(var i in temp)
+            {
+                Console.WriteLine(i);
+            }
+            Console.WriteLine("Общее количество картин равно: " + temp.Count());
+        }
+
+
+        public void PrintTree(string artist)
+        {
+            var tests1 = new List<List<string>>();
+            var tests2 = new List<List<string>>();
+            var tests3 = new List<List<string>>();
+            foreach (var i in Paint)
+            {
+                tests1.Add(i.StrCon());
+            }
+            foreach (var i in Art)
+            {
+                tests2.Add(i.StrCon());
+            }
+            foreach (var i in Style)
+            {
+                tests3.Add(i.StrCon());
+            }
+            var temp = from paint in tests1
+                       join art in tests2 on paint[2] equals art[0]
+                       join style in tests3 on paint[5] equals style[0]
+                       where art[1] == artist
+                       orderby paint[0]
+                       select (new { Стиль = style[1] + "\n", Картина = paint[1] + "\n" });
+            foreach (var i in temp)
+            {
+                Console.WriteLine(i);
+            }
+            Console.WriteLine("Общее количество картин равно: " + temp.Count());
+        }
+
+        public void PrintFore(int part, string style)
+        {
+            var tests1 = new List<List<string>>();
+            var tests2 = new List<List<string>>();
+            var tests3 = new List<List<string>>();
+            foreach (var i in Paint)
+            {
+                tests1.Add(i.StrCon());
+            }
+            foreach (var i in Art)
+            {
+                tests2.Add(i.StrCon());
+            }
+            foreach (var i in Style)
+            {
+                tests3.Add(i.StrCon());
+            }
+            var temp = from paint in tests1
+                       join art in tests2 on paint[2] equals art[0]
+                       join styles in tests3 on paint[5] equals styles[0]
+                       where paint[3] == Convert.ToString(part) && styles[1] == style
+                       orderby paint[0]
+                       select (new { Художник = art[1] + "\n", Картина = paint[1] + "\n" });
+            foreach (var i in temp)
+            {
+                Console.WriteLine(i);
+            }
+            Console.WriteLine("Общее количество картин равно: "+temp.Count());
+        }
+    }
+}

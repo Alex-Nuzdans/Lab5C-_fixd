@@ -1,0 +1,87 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+
+namespace Lab_5_1
+{
+    class Paintings
+    {
+        internal int id;
+        private string _name;
+        private int _id_artsts;
+        private int _part;
+        private string _year;
+        private int _id_stile;
+
+        public Paintings(int id, string name, int id_artsts, int part,string year, int stile)
+        {
+            
+            this.id = id;
+            this._name = name;
+            this._id_artsts = id_artsts;
+            this._part = part;
+            this._year = year;
+            this._id_stile = stile;
+        }
+
+
+        public List<string> StrCon() {
+            var temp=new List<string>();
+            temp.Add(Convert.ToString(id));
+            temp.Add(_name);
+            temp.Add(Convert.ToString(_id_artsts));
+            temp.Add(Convert.ToString(_part));
+            temp.Add(_year);
+            temp.Add(Convert.ToString(_id_stile));
+            return temp;
+        }
+
+
+        public void NewValue(string temp,string data)
+        {
+            if (temp == "name")
+            {
+                _name = data;
+            }
+            else if (temp == "year")
+            {
+                _year = data;
+            }
+        }
+
+
+        public void NewValue(string temp, int data)
+        {
+            if (temp == "a_id")
+            {
+                _id_artsts = data;
+            }
+            else if (temp == "part")
+            {
+                _part = data;
+            }
+            else if (temp == "s_id")
+            {
+                _id_stile = data;
+            }
+        }
+
+
+        public override string ToString()
+        { 
+            return ("id: "+Convert.ToString(id) +
+                    "\nНазвание: " +Convert.ToString(_name) + 
+                    "\nid_художника: " + Convert.ToString(_id_artsts) + 
+                    "\nЧасть Эрмитажа: " + Convert.ToString(_part) + 
+                    "\nГод: " + Convert.ToString(_year) + 
+                    "\nid_стиля: " + Convert.ToString(_id_stile));
+        }
+    }
+}
